@@ -2,6 +2,7 @@ import random
 from scipy.stats import f, t
 from prettytable import PrettyTable
 import numpy as np
+from datetime import datetime
 
 x1_min = -6
 x1_max = 1
@@ -142,14 +143,17 @@ for i in range(15):
 
 Gp = max(dcouple) / sum(dcouple)
 q = 0.05
+start_time = datetime.now()
 f1 = m - 1
 f2 = N = 15
 fisher = f.isf(*[q / f2, f1, (f2 - 1) * f1])
 Gt = round(fisher / (fisher + (f2 - 1)), 4)
 print("Gp ="+str(Gp)+", Gt ="+str(Gt))
 if Gp < Gt:
+    print(f"\nТест Кохрена продовжувався: {(datetime.now() - start_time).total_seconds()} секунд\n")
     print("Дисперсія однорідна")
     print("Критерій Стьюдента")
+    start_time = datetime.now()
     sb = sum(dcouple) / N
     ssbs = sb / N * m
     sbs = ssbs ** 0.5
@@ -175,6 +179,7 @@ if Gp < Gt:
             print("t%s < ttabl, b%s не значимий" % (i,i))
             globals()['b%s' % i ] = 0
             d = d - 1
+    print(f"\nТест Стьюдента продовжувався: {(datetime.now() - start_time).total_seconds()} секунд\n")
     print("\nПеревірка в спрощене рівняння регресії:")
     for i in range(15):
         print("y"+str(i+1)+"_av"+str(i+1)+" = "+str(round(b[0] + b[1]*X1[i]+b[2]*X2[i]+b[3]*X3[i]+b[4]*X1[i]*X2[i]+b[5]*X1[i]*X3[i]+b[6]*X2[i]*X3[i]+b[7]*X1[i]*X2[i]*X3[i]+b[8]*X1kv[i]+b[9]*X2kv[i]+b[10]*X3kv[i],3))+" = "+ str(round( globals()['y%s_av%s' % (i + 1, i + 1)],3)))
@@ -196,6 +201,7 @@ if Gp < Gt:
     y_y14 = b[0]+b[1]*X1[13]+b[2]*X2[13]+b[3]*X3[13]+b[4]*X12[13]+b[5]*X13[13]+b[6]*X23[13]+b[7]*X123[13]+b[8]*X1kv[13]+b[9]*X2kv[13]+b[10]*X3kv[13]
     y_y15 = b[0]+b[1]*X1[14]+b[2]*X2[14]+b[3]*X3[14]+b[4]*X12[14]+b[5]*X13[14]+b[6]*X23[14]+b[7]*X123[14]+b[8]*X1kv[14]+b[9]*X2kv[14]+b[10]*X3kv[14]
     print("\nКритерій Фішера")
+    start_time = datetime.now()
     print(d, " значимих коефіцієнтів")
     f4 = N - d
     sad = ((y_y1-y1_av1)**2+(y_y2-y2_av2)**2+(y_y3-y3_av3)**2+(y_y4-y4_av4)**2+(y_y5-y5_av5)**2+(y_y6-y6_av6)**2+(y_y7-y7_av7)**2+(y_y8-y8_av8)**2+ (y_y9-y9_av9)**2+(y_y10-y10_av10)**2+(y_y11-y11_av11)**2+(y_y12-y12_av12)**2+(y_y13-y13_av13)**2+(y_y14-y14_av14)**2+(y_y15-y15_av15)**2)*(m/(N-d))
@@ -207,10 +213,13 @@ if Gp < Gt:
 
     cont = 0
     if Fp > Ft:
+        print(f"\nТест Фішера продовжувався: {(datetime.now() - start_time).total_seconds()} секунд\n")
         print("Fp =", round(Fp, 2), " > Ft", Ft, "\nРівняння неадекватно оригіналу")
         cont = 1
     else:
+        print(f"\nТест Фішера продовжувався: {(datetime.now() - start_time).total_seconds()} секунд\n")
         print("Fp =", round(Fp, 2), " < Ft", Ft, "\nРівняння адекватно оригіналу")
 
 else:
+    print(f"\nТест Кохрена продовжувався: {(datetime.now() - start_time).total_seconds()} секунд\n")
     print("Дисперсія  неоднорідна")
